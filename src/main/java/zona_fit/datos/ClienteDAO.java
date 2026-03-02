@@ -50,6 +50,38 @@ public class ClienteDAO implements IClienteDAO{
 
     @Override
     public boolean buscarClientePorId(Cliente cliente) {
+        PreparedStatement ps;
+        ResultSet rs;
+        Connection con = Conexion.getConexion();
+        var sql = "SELECT * FROM cliente WHERE id = ?";
+        try{
+            //Nos conectamos a la base de datos y le pasamos la sentencia sql
+            ps = con.prepareStatement(sql);
+            //Llenamos el parametro pendiente
+            ps.setInt(1,cliente.getId());
+            //ejecutamos la sentencia sql y se almacena en rs
+            rs = ps.executeQuery();
+            if(rs.next()){
+                cliente.setNombre(rs.getString("nombre"));
+                cliente.setApellido(rs.getString("apellido"));
+                cliente.setMembresia(rs.getInt("membresia"));
+                return true;
+
+
+            }
+
+
+        }catch(Exception e){
+            System.out.println("Error al recuperar cliente por id: " + e.getMessage());
+        }
+        finally {
+
+            try{
+                con.close();
+            }catch(Exception e){
+                System.out.println("Error al cerrar conexión: " + e.getMessage());
+            }
+        }
         return false;
     }
 
@@ -67,4 +99,7 @@ public class ClienteDAO implements IClienteDAO{
     public boolean eliminarCliente(Cliente cliente) {
         return false;
     }
+
+
+
 }
