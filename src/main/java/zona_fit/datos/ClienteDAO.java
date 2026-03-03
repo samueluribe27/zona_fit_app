@@ -114,6 +114,28 @@ public class ClienteDAO implements IClienteDAO{
 
     @Override
     public boolean modificarCliente(Cliente cliente) {
+        PreparedStatement ps;
+        Connection con = Conexion.getConexion();
+        var sql = "UPDATE cliente SET nombre=?, apellido=?, membresia=? " + " WHERE id = ?";
+        try{
+            //Pasamos los parámetros para la sentencia sql
+            ps = con.prepareStatement(sql);
+            ps.setString(1, cliente.getNombre());
+            ps.setString(2, cliente.getApellido());
+            ps.setInt(3, cliente.getMembresia());
+            ps.setInt(4, cliente.getId());
+            ps.execute();
+            return true;
+        }catch(Exception e){
+            System.out.println("Error al modificar el cliente: " + e.getMessage());
+        }
+        finally{
+            try{
+                con.close();
+            }catch(Exception e){
+                System.out.println("Error al cerrar la conexión: " + e.getMessage());
+            }
+        }
         return false;
     }
 
@@ -122,8 +144,5 @@ public class ClienteDAO implements IClienteDAO{
         return false;
 
     }
-
-
-
 
 }
