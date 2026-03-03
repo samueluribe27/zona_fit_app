@@ -141,8 +141,27 @@ public class ClienteDAO implements IClienteDAO{
 
     @Override
     public boolean eliminarCliente(Cliente cliente) {
+        PreparedStatement ps;
+        Connection con = Conexion.getConexion();
+        var sql = "DELETE FROM cliente WHERE id = ?";
+        try{
+            ps = con.prepareStatement(sql);
+            ps.setInt(1, cliente.getId());
+            ps.execute();
+            return true;
+        }catch(Exception e){
+            System.out.println("Error eliminando cliente");
+        }
+        finally{
+            try{
+                con.close();
+            }catch(Exception e){
+                System.out.println("Error cerrando la conexión");
+            }
+        }
         return false;
 
     }
+
 
 }
